@@ -1,13 +1,13 @@
 namespace RemoteManager; 
 
+using ModuleSystem;
 using Gtk;
 
 public class RemoteManagerUI : Window {
     //Instances of elements in gui
     #region Properties
-    
-    [Builder.Object]
-    private Gtk.ListBox ModuleSelector = null!;
+
+    [Builder.Object] private ListBox? ModuleSelector = null;
     
     #endregion
 
@@ -17,7 +17,7 @@ public class RemoteManagerUI : Window {
     private RemoteManagerUI(Builder builder, IntPtr handle) : base(handle) {
         _builder = builder;
 
-        builder.Autoconnect(this);
+        builder.Autoconnect(this); //TODO: Instead of using auto-connect, maybe do it manually as to avoid compiler warnings.
 
         _availableModules = RetrieveAvailableModules();
         EmployModules(_availableModules);
@@ -33,10 +33,8 @@ public class RemoteManagerUI : Window {
             newElem.SetProperty("visible", new GLib.Value(true));
             label.SetProperty("visible", new GLib.Value(true));
             newElem.Add(label);
-        
-            var mSel = (ListBox) _builder.GetObject("ModuleSelector");
-        
-            mSel.Add(newElem);
+
+            ModuleSelector.Add(newElem);
         }
     }
 
