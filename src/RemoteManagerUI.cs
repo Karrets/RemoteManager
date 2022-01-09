@@ -3,11 +3,13 @@ namespace RemoteManager;
 using Gtk;
 
 public class RemoteManagerUI : Window {
-    private readonly Builder _builder;
-    
+    private Builder _builder;
     private RemoteManagerUI(Builder builder, IntPtr handle) : base(handle) {
         _builder = builder;
+
         builder.Autoconnect(this);
+        
+        DeleteEvent += delegate { Application.Quit(); };
     }
 
     public static RemoteManagerUI Create() {

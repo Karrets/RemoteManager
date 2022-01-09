@@ -2,19 +2,14 @@
 
 using Gtk;
 
-public class RemoteManagerApp {
-    private static RemoteManagerApp? _instance;
+public static class RemoteManagerApp {
+    private static Window? _instance;
 
-    private RemoteManagerApp() {
-        var window = RemoteManagerUI.Create();
-        window.Show();
-        _instance = this;
-    }
-    
     public static void Main(string[] args) {
         Application.Init();
         
-        _instance = new RemoteManagerApp();
+        _instance = RemoteManagerUI.Create();
+        _instance.Show();
 
         Application.Run();
     }
