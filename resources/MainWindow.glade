@@ -169,11 +169,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkPaned" id="PrimaryContent">
+          <object class="GtkPaned" id="AllContent">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="wide-handle">True</property>
             <child>
               <object class="GtkBox" id="SidePanelGroup">
+                <property name="width-request">170</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
@@ -184,6 +186,7 @@
                     <property name="primary-icon-name">edit-find-symbolic</property>
                     <property name="primary-icon-activatable">False</property>
                     <property name="primary-icon-sensitive">False</property>
+                    <property name="placeholder-text" translatable="yes">Search Modules</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -195,9 +198,20 @@
                   <object class="GtkListBox" id="ModuleSelector">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <child type="placeholder">
+                      <object class="GtkLabel">
+                        <property name="height-request">35</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">No Modules Found...
+
+☹️</property>
+                        <property name="justify">center</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
@@ -205,11 +219,24 @@
               </object>
               <packing>
                 <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkBox" id="ModuleContent">
+                <property name="width-request">400</property>
+                <property name="height-request">400</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="resize">True</property>
+                <property name="shrink">True</property>
+              </packing>
             </child>
           </object>
           <packing>

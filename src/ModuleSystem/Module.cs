@@ -6,19 +6,20 @@ namespace RemoteManager.ModuleSystem;
 using Gtk;
 
 public class Module {
-    private Builder _builder;
     private Box _internalGUI;
     private JsonDocument _configFile;
     private string _internalName;
     private ZipArchive _modArchive;
-    
-    
-    private Module(Builder builder, Box internalGUI, JsonDocument configFile, string internalName, ZipArchive modArchive) {
-        _builder = builder;
+    private static Dictionary<string, Module> modules = new Dictionary<string, Module>();
+
+
+    private Module(Box internalGUI, JsonDocument configFile, string internalName, ZipArchive modArchive) {
         _internalGUI = internalGUI;
         _configFile = configFile;
         _internalName = internalName;
         _modArchive = modArchive;
+        
+        modules.Add(internalName, this);
     }
 
     public static Module DefineModuleFromPath(string path) {
@@ -33,22 +34,28 @@ public class Module {
         );
 
         foreach (var fileEntry in zip.Entries) {
-            if(fileEntry.Name == "config.json") {
-                configFile = JsonDocument.Parse(
-                    new StreamReader(fileEntry.Open()).ReadToEnd()
-                );
-            } else if(fileEntry.Name == "gui.glade") {
-                builder = new Builder(
-                    null,
-                    new StreamReader(fileEntry.Open()).ReadToEnd(),
-                    null);
-
-                try { mainGuiElem = (Box) builder.GetObject("PrimaryInterface"); }
-                catch (InvalidCastException e) {
-                    throw new MalformedModuleException(
-                        "Primary interface is of incorrect type or does not exist!", e
+            switch (fileEntry.Name) {
+                case "conf.json":
+                case "config.json":
+                    configFile = JsonDocument.Parse(
+                        new StreamReader(fileEntry.Open()).ReadToEnd()
                     );
-                }
+                    break;
+                case "gui.glade":
+                    builder = new Builder();
+                    uint handle = builder.AddFromString(new StreamReader(fileEntry.Open()).ReadToEnd());
+
+                    try {
+                        mainGuiElem = (Box) builder.GetObject("PrimaryInterface");
+                        mainGuiElem.Unparent();
+                    }
+                    catch (InvalidCastException e) {
+                        throw new MalformedModuleException(
+                            "Primary interface is of incorrect type or does not exist!", e
+                        );
+                    }
+
+                    break;
             }
         }
 
@@ -58,9 +65,17 @@ public class Module {
             );
         }
 
-        return new Module(builder, mainGuiElem, configFile, internalName, zip);
+        return new Module(mainGuiElem, configFile, internalName, zip);
     }
 
+    public string? GetDisplayModuleName() {
+        return _configFile.RootElement.GetProperty("name").GetString();
+    }
+    
+    public string? GetInternalModuleName() {
+        return _internalName;
+    }
+    
     public Box GetModuleGui() {
         return _internalGUI;
     }
