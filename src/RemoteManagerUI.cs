@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace RemoteManager; 
@@ -8,10 +9,13 @@ using Gtk;
 public class RemoteManagerUI : Window {
     //Instances of elements in gui
     #region Properties
-
+    // ReSharper disable InconsistentNaming FieldCanBeMadeReadOnly.Local
+    
+    [Builder.Object] private SearchEntry? ModuleSearch = null;
     [Builder.Object] private ListBox? ModuleSelector = null;
     [Builder.Object] private Box? ModuleContent = null;
     
+    // ReSharper restore InconsistentNaming FieldCanBeMadeReadOnly.Local
     #endregion
 
     private Builder _builder;
@@ -26,14 +30,89 @@ public class RemoteManagerUI : Window {
         _availableModules = RetrieveAvailableModules();
         EmployModules(_availableModules);
         
-        ModuleSelector.AddSignalHandler("row-activated", ModuleSelectionEvent);
+        ModuleSelector?.AddSignalHandler("row-activated", ModuleSelectionEvent);
+        ModuleSearch?.AddSignalHandler(
+            "search-changed",
+            delegate(SearchEntry searchEntry, EventArgs args) { ModuleSelector?.InvalidateFilter(); }
+        );
+
+        if(ModuleSelector is not null) ModuleSelector.FilterFunc = ModuleSearchFilter;
+
         DeleteEvent += delegate { Application.Quit(); }; //Simple anon method to close when exit button pressed.
+    }
+
+    public static int CalcStringDifference(string s, string t)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            if (string.IsNullOrEmpty(t))
+                return 0;
+            return t.Length;
+        }
+
+        if (string.IsNullOrEmpty(t))
+        {
+            return s.Length;
+        }
+
+        int n = s.Length;
+        int m = t.Length;
+        int[,] d = new int[n + 1, m + 1];
+
+        // initialize the top and right of the table to 0, 1, 2, ...
+        for (int i = 0; i <= n; d[i, 0] = i++);
+        for (int j = 1; j <= m; d[0, j] = j++);
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                int min1 = d[i - 1, j] + 1;
+                int min2 = d[i, j - 1] + 1;
+                int min3 = d[i - 1, j - 1] + cost;
+                d[i, j] = Math.Min(Math.Min(min1, min2), min3);
+            }
+        }
+        return d[n, m];
+    }
+    
+    private bool ModuleSearchFilter(ListBoxRow row) {
+        if(ModuleSearch?.Text is null or "") return true;
+
+        Module? module = null;
+        
+        try {
+            module = (Module?) row.Data["assocModule"];
+        } catch(InvalidCastException) {
+            throw new InvalidDataException("Module for given row \"" + row.Name + "\" is of incorrect type.");
+        }
+
+        if(module is null) {
+            throw new MissingMemberException("No associated module for row: " + row.Name);
+
+        }
+
+        var query = ModuleSearch.Text;
+        var moduleDName = module.GetDisplayName();
+        var moduleIName = module.GetInternalName();
+        var moduleDescription = module.GetDescription();
+
+        var distance = new[] {
+            CalcStringDifference(query, moduleDName),
+            (CalcStringDifference(query, moduleIName) * 2),
+            (CalcStringDifference(query, moduleDescription) / 5)
+        }.Min();
+        //Some basic weighting, internal module name is half as relevant, where as the description is 5 times more!
+        //This should be tweaked and tuned until it feels right.
+
+        return (distance <= 20); //Maximum 'distance' value that the given option can be before it is discarded!
     }
 
     private void EmployModules(IEnumerable<Module> modules) {
         foreach (var module in modules) {
             var newElem = new ListBoxRow();
-            var label = new Label(module.GetDisplayModuleName());
+            var label = new Label(module.GetDisplayName());
             
             newElem.Visible = true;
             newElem.Activatable = true;
@@ -42,7 +121,7 @@ public class RemoteManagerUI : Window {
             
             newElem.Add(label);
             
-            ModuleSelector.Add(newElem);
+            ModuleSelector?.Add(newElem);
         }
     }
 
@@ -79,6 +158,6 @@ public class RemoteManagerUI : Window {
         foreach (var child in mGui.Children) {
             child.Visible = true;
         }
-        ModuleContent.Add(mGui);
+        ModuleContent?.Add(mGui);
     }
 }

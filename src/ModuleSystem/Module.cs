@@ -6,9 +6,9 @@ namespace RemoteManager.ModuleSystem;
 using Gtk;
 
 public class Module {
-    private Box _internalGUI;
-    private JsonDocument _configFile;
-    private string _internalName;
+    private readonly Box _internalGUI;
+    private readonly JsonDocument _configFile;
+    private readonly string _internalName;
     private ZipArchive _modArchive;
     private static Dictionary<string, Module> modules = new Dictionary<string, Module>();
 
@@ -68,15 +68,23 @@ public class Module {
         return new Module(mainGuiElem, configFile, internalName, zip);
     }
 
-    public string? GetDisplayModuleName() {
-        return _configFile.RootElement.GetProperty("name").GetString();
+    public string GetDisplayName() {
+        return _configFile.RootElement.GetProperty("name").GetString() ?? throw new NullReferenceException(
+            "Module has no given display name!"
+        );
     }
     
-    public string? GetInternalModuleName() {
+    public string GetInternalName() {
         return _internalName;
     }
     
     public Box GetModuleGui() {
         return _internalGUI;
+    }
+
+    public string GetDescription() {
+        return _configFile.RootElement.GetProperty("description").GetString() ?? throw new NullReferenceException(
+            "Module has no given description!"
+        );
     }
 }
