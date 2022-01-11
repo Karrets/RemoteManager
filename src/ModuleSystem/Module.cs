@@ -43,7 +43,7 @@ public class Module {
                     break;
                 case "gui.glade":
                     builder = new Builder();
-                    uint handle = builder.AddFromString(new StreamReader(fileEntry.Open()).ReadToEnd());
+                    builder.AddFromString(new StreamReader(fileEntry.Open()).ReadToEnd());
 
                     try {
                         mainGuiElem = (Box) builder.GetObject("PrimaryInterface");

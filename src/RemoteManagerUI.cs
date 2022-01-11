@@ -1,7 +1,4 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-
-namespace RemoteManager; 
+namespace RemoteManager;
 
 using ModuleSystem;
 using Gtk;
@@ -9,13 +6,15 @@ using Gtk;
 public class RemoteManagerUI : Window {
     //Instances of elements in gui
     #region Properties
+
     // ReSharper disable InconsistentNaming FieldCanBeMadeReadOnly.Local
-    
+
     [Builder.Object] private SearchEntry? ModuleSearch = null;
     [Builder.Object] private ListBox? ModuleSelector = null;
     [Builder.Object] private Box? ModuleContent = null;
-    
+
     // ReSharper restore InconsistentNaming FieldCanBeMadeReadOnly.Local
+
     #endregion
 
     private Builder _builder;
@@ -25,15 +24,15 @@ public class RemoteManagerUI : Window {
         _builder = builder;
 
         builder.Autoconnect(this);
-        //^^-TODO: Instead of using auto-connect, maybe do it manually as to avoid compiler warnings.
 
         _availableModules = RetrieveAvailableModules();
         EmployModules(_availableModules);
-        
+
         ModuleSelector?.AddSignalHandler("row-activated", ModuleSelectionEvent);
+
         ModuleSearch?.AddSignalHandler(
             "search-changed",
-            delegate(SearchEntry searchEntry, EventArgs args) { ModuleSelector?.InvalidateFilter(); }
+            delegate(SearchEntry _, EventArgs _) { ModuleSelector?.InvalidateFilter(); }
         );
 
         if(ModuleSelector is not null) ModuleSelector.FilterFunc = ModuleSearchFilter;
@@ -41,57 +40,48 @@ public class RemoteManagerUI : Window {
         DeleteEvent += delegate { Application.Quit(); }; //Simple anon method to close when exit button pressed.
     }
 
-    public static int CalcStringDifference(string s, string t)
-    {
-        if (string.IsNullOrEmpty(s))
-        {
-            if (string.IsNullOrEmpty(t))
-                return 0;
-            return t.Length;
+    private static int CalcStringDifference(string s, string t) {
+        //https://stackoverflow.com/a/6944095 Thank you to the Stack-Overflow community and the answerer 'Marty Neal'
+        //I trust their implementation of the Damereau-Levenshein Distance algorithm.
+
+        if(string.IsNullOrEmpty(s)) {
+            return string.IsNullOrEmpty(t) ? 0 : t.Length;
         }
 
-        if (string.IsNullOrEmpty(t))
-        {
-            return s.Length;
-        }
+        if(string.IsNullOrEmpty(t)) { return s.Length; }
 
-        int n = s.Length;
-        int m = t.Length;
-        int[,] d = new int[n + 1, m + 1];
+        var n = s.Length;
+        var m = t.Length;
+        var d = new int[n + 1, m + 1];
 
         // initialize the top and right of the table to 0, 1, 2, ...
-        for (int i = 0; i <= n; d[i, 0] = i++);
-        for (int j = 1; j <= m; d[0, j] = j++);
+        for(var i = 0; i <= n; d[i, 0] = i++) {};
+        for(var j = 1; j <= m; d[0, j] = j++) {};
 
-        for (int i = 1; i <= n; i++)
-        {
-            for (int j = 1; j <= m; j++)
-            {
-                int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
-                int min1 = d[i - 1, j] + 1;
-                int min2 = d[i, j - 1] + 1;
-                int min3 = d[i - 1, j - 1] + cost;
+        for (var i = 1; i <= n; i++) {
+            for (var j = 1; j <= m; j++) {
+                var cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                var min1 = d[i - 1, j] + 1;
+                var min2 = d[i, j - 1] + 1;
+                var min3 = d[i - 1, j - 1] + cost;
                 d[i, j] = Math.Min(Math.Min(min1, min2), min3);
             }
         }
+
         return d[n, m];
     }
-    
+
     private bool ModuleSearchFilter(ListBoxRow row) {
         if(ModuleSearch?.Text is null or "") return true;
 
-        Module? module = null;
-        
-        try {
-            module = (Module?) row.Data["assocModule"];
-        } catch(InvalidCastException) {
+        Module? module;
+
+        try { module = (Module?) row.Data["assocModule"]; }
+        catch (InvalidCastException) {
             throw new InvalidDataException("Module for given row \"" + row.Name + "\" is of incorrect type.");
         }
 
-        if(module is null) {
-            throw new MissingMemberException("No associated module for row: " + row.Name);
-
-        }
+        if(module is null) { throw new MissingMemberException("No associated module for row: " + row.Name); }
 
         var query = ModuleSearch.Text;
         var moduleDName = module.GetDisplayName();
@@ -113,14 +103,14 @@ public class RemoteManagerUI : Window {
         foreach (var module in modules) {
             var newElem = new ListBoxRow();
             var label = new Label(module.GetDisplayName());
-            
+
             newElem.Visible = true;
             newElem.Activatable = true;
             newElem.Data.Add("assocModule", module);
             label.Visible = true;
-            
+
             newElem.Add(label);
-            
+
             ModuleSelector?.Add(newElem);
         }
     }
@@ -136,28 +126,26 @@ public class RemoteManagerUI : Window {
 
     private void ModuleSelectionEvent(ListBox listBox, EventArgs args) {
         var row = listBox.SelectedRow;
-        
+
         Module? module = null;
 
-        if(row.Data["assocModule"] is Module) {
-            module = (Module?) row.Data["assocModule"];
-        }
+        if(row.Data["assocModule"] is Module) { module = (Module?) row.Data["assocModule"]; }
 
         if(module is null) {
-            throw new MalformedModuleException("The selected module had a malformed or non module data attatched!");
+            throw new MalformedModuleException("The selected module had a malformed or non module data attached!");
         }
-        
+
         BeginModuleSession(module);
     }
+
     private void BeginModuleSession(Module m) {
         var mGui = m.GetModuleGui();
-        
+
         mGui.Visible = true;
         mGui.ChildVisible = true;
 
-        foreach (var child in mGui.Children) {
-            child.Visible = true;
-        }
+        foreach (var child in mGui.Children) { child.Visible = true; }
+
         ModuleContent?.Add(mGui);
     }
 }
