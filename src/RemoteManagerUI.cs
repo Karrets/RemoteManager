@@ -18,12 +18,15 @@ public class RemoteManagerUI : Window {
     #endregion
 
     private Builder _builder;
+    private ToolbarManager _toolbarManager;
     private List<Module> _availableModules;
 
     private RemoteManagerUI(Builder builder, IntPtr handle) : base(handle) {
         _builder = builder;
+        _toolbarManager = new ToolbarManager();
 
         builder.Autoconnect(this);
+        builder.Autoconnect(_toolbarManager);
 
         _availableModules = RetrieveAvailableModules();
         EmployModules(_availableModules);
