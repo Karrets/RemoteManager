@@ -3,18 +3,18 @@ namespace RemoteManager.ConnectionSystem;
 using Renci.SshNet;
 
 public static class RemoteBridge {
-        private static ConnectionConfiguration? curConfig;
-        private static SshClient? curSession;
+        private static ConnectionConfiguration? _curConfig;
+        private static SshClient? _curSession;
         
         public static void BeginSession() {
-            curSession = new SshClient("localhost", "kodi86", @"***REMOVED***");
+            _curSession = new SshClient("localhost", "kodi86", @"***REMOVED***");
             
-            curSession.Connect();
+            _curSession.Connect();
             
-            var r = curSession.RunCommand("touch /home/kodi86/test.xyz");
+            var r = _curSession.RunCommand("touch ~/test.xyz");
             Console.WriteLine(r.Result);
         }
         public static void EndSession() {
-                curSession = null;
+                _curSession = null;
         }
 }
