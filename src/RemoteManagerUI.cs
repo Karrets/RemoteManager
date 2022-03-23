@@ -7,13 +7,16 @@ public class RemoteManagerUI : Window {
     //Instances of elements in gui
     #region Properties
 
-    // ReSharper disable InconsistentNaming FieldCanBeMadeReadOnly.Local
-
-    [Builder.Object] private SearchEntry? ModuleSearch = null;
-    [Builder.Object] private ListBox? ModuleSelector = null;
-    [Builder.Object] private Box? ModuleContent = null;
-
-    // ReSharper restore InconsistentNaming FieldCanBeMadeReadOnly.Local
+    // ReSharper disable InconsistentNaming FieldCanBeMadeReadOnly.Local MemberInitializerValueIgnored
+    
+    // Comments disable warnings about non initialization, as your IDE is unlikely to be aware of
+    // the gtk# auto-initializer...
+    
+    [Builder.Object] private SearchEntry ModuleSearch = null!;
+    [Builder.Object] private ListBox ModuleSelector = null!;
+    [Builder.Object] private Paned AllContent = null!;
+    
+    // ReSharper restore InconsistentNaming FieldCanBeMadeReadOnly.Local MemberInitializerValueIgnored
 
     #endregion
 
@@ -31,14 +34,14 @@ public class RemoteManagerUI : Window {
         _availableModules = RetrieveAvailableModules();
         EmployModules(_availableModules);
 
-        ModuleSelector?.AddSignalHandler("row-activated", ModuleSelectionEvent);
+        ModuleSelector.AddSignalHandler("row-activated", ModuleSelectionEvent);
 
-        ModuleSearch?.AddSignalHandler(
+        ModuleSearch.AddSignalHandler(
             "search-changed",
             delegate(SearchEntry _, EventArgs _) { ModuleSelector?.InvalidateFilter(); }
         );
 
-        if(ModuleSelector is not null) ModuleSelector.FilterFunc = ModuleSearchFilter;
+        ModuleSelector.FilterFunc = ModuleSearchFilter;
 
         DeleteEvent += delegate { Application.Quit(); }; //Simple anon method to close when exit button pressed.
     }
@@ -75,7 +78,7 @@ public class RemoteManagerUI : Window {
     }
 
     private bool ModuleSearchFilter(ListBoxRow row) {
-        if(ModuleSearch?.Text is null or "") return true;
+        if(ModuleSearch.Text is null or "") return true;
 
         Module? module;
 
@@ -99,7 +102,8 @@ public class RemoteManagerUI : Window {
         //Some basic weighting, internal module name is half as relevant, where as the description is 5 times more!
         //This should be tweaked and tuned until it feels right.
 
-        return (distance <= 20); //Maximum 'distance' value that the given option can be before it is discarded!
+        Console.WriteLine(distance);
+        return (distance <= 10); //Maximum 'distance' value that the given option can be before it is discarded!
     }
 
     private void EmployModules(IEnumerable<Module> modules) {
@@ -135,7 +139,7 @@ public class RemoteManagerUI : Window {
         if(row.Data["assocModule"] is Module) { module = (Module?) row.Data["assocModule"]; }
 
         if(module is null) {
-            throw new MalformedModuleException("The selected module had a malformed or non module data attached!");
+            throw new MalformedModuleException("The selected module is malformed or module was not parsed correctly!");
         }
 
         BeginModuleSession(module);
@@ -144,11 +148,11 @@ public class RemoteManagerUI : Window {
     private void BeginModuleSession(Module m) {
         var mGui = m.GetModuleGui();
 
-        mGui.Visible = true;
-        mGui.ChildVisible = true;
+        // mGui.PreInit()? May be needed later if certain modules need to be prepped or something...
 
-        foreach (var child in mGui.Children) { child.Visible = true; }
-
-        ModuleContent?.Add(mGui);
+        if (AllContent.Child2 is not null) {
+            AllContent.Remove(AllContent.Child2);
+        }
+        AllContent.Add2(mGui);
     }
 }

@@ -6,7 +6,7 @@ The following libraries are used,
 Used for connecting to remote servers, and running administrative commands.
 
  - [GTK#](https://github.com/GtkSharp/GtkSharp)
-Used in tandem with glade to create the GUI.
+Used in tandem with glade to create all the GUI elements.
 
 You can compile this program using MSBuild and NuGet. Presently the program is in an early beta, and non functional. Feature requests and similar are greatly appreciated, and will be considered when the application's basic feature set is fully implemented.
 

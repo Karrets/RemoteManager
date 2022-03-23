@@ -14,8 +14,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="modules\exmaple.module">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <None Update="modules\example.zip">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="modules\exampleDupe.zip">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 
