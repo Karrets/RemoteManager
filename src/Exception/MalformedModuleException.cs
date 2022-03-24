@@ -1,14 +1,14 @@
 namespace RemoteManager.ModuleSystem; 
 
-public class MalformedModuleException : Exception {
+public class MalformedModuleException : System.Exception {
     private readonly string _message;
-    private readonly Exception? _internalError;
+    private readonly System.Exception? _internalError;
 
     public MalformedModuleException(string message) {
         _message = message;
     }
 
-    public MalformedModuleException(string message, Exception internalError) {
+    public MalformedModuleException(string message, System.Exception internalError) {
         _message = message;
         _internalError = internalError;
     }
