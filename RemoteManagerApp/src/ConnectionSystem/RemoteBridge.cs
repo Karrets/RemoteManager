@@ -1,7 +1,6 @@
-using RemoteManager.Exception;
+namespace RemoteManagerApp.ConnectionSystem;
 
-namespace RemoteManager.ConnectionSystem;
-
+using Exception;
 using Renci.SshNet;
 
 public static class RemoteBridge {

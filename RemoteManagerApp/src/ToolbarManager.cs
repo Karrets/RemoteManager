@@ -1,4 +1,4 @@
-namespace RemoteManager; 
+namespace RemoteManagerApp; 
 
 using Gtk;
 

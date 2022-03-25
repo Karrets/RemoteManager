@@ -1,4 +1,4 @@
-namespace RemoteManager; 
+namespace RemoteManagerApp.Exception; 
 
 //Used when a connection is attempted without first configuring in RemoteBridge.cs
 public class UnconfiguredConnectionException : System.Exception {

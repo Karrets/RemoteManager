@@ -1,14 +1,13 @@
-using NUnit.Framework;
-using RemoteManager;
-using RemoteManager.ConnectionSystem;
-using RemoteManager.Exception;
+namespace RemoteManagerTests;
 
-namespace tests;
+using NUnit.Framework;
+using RemoteManagerApp.ConnectionSystem;
+using RemoteManagerApp.Exception;
 
 public class TestRemoteBridge {
     [Test]
     public void TestConnectionAlreadyRunningThrowsException() {
-        ConnectionConfiguration config = new ConnectionConfiguration("host","username","keyfile",22);
+        var config = new ConnectionConfiguration("host","username","keyfile",22);
         RemoteBridge.ConfigureSession(config);
         RemoteBridge.BeginSession();
         Assert.Throws<ConnectionAlreadyEstablishedException>(RemoteBridge.BeginSession);

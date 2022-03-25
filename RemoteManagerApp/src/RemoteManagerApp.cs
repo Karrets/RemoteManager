@@ -1,6 +1,4 @@
-﻿using RemoteManager.ConnectionSystem;
-
-namespace RemoteManager; 
+﻿namespace RemoteManagerApp; 
 
 using Gtk;
 

@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteManager", "RemoteManager.csproj", "{521350BA-CADB-4135-993B-8FEA51B835F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteManagerApp", "RemoteManagerApp\RemoteManagerApp.csproj", "{06C928E6-5669-4CBF-AFBD-97C259C661AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{E5133247-3282-4138-A085-9B0F941C6B79}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteManagerTests", "RemoteManagerTests\RemoteManagerTests.csproj", "{2180F242-5408-4DE9-BA7A-2ABF7BE67869}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{521350BA-CADB-4135-993B-8FEA51B835F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{521350BA-CADB-4135-993B-8FEA51B835F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{521350BA-CADB-4135-993B-8FEA51B835F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{521350BA-CADB-4135-993B-8FEA51B835F2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5133247-3282-4138-A085-9B0F941C6B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5133247-3282-4138-A085-9B0F941C6B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5133247-3282-4138-A085-9B0F941C6B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5133247-3282-4138-A085-9B0F941C6B79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C928E6-5669-4CBF-AFBD-97C259C661AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C928E6-5669-4CBF-AFBD-97C259C661AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C928E6-5669-4CBF-AFBD-97C259C661AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C928E6-5669-4CBF-AFBD-97C259C661AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2180F242-5408-4DE9-BA7A-2ABF7BE67869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2180F242-5408-4DE9-BA7A-2ABF7BE67869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2180F242-5408-4DE9-BA7A-2ABF7BE67869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2180F242-5408-4DE9-BA7A-2ABF7BE67869}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

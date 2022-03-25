@@ -1,4 +1,4 @@
-namespace RemoteManager.ConnectionSystem;
+namespace RemoteManagerApp.ConnectionSystem;
 
 public struct ConnectionConfiguration
 {

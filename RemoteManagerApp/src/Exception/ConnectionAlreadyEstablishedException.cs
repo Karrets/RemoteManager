@@ -1,4 +1,4 @@
-namespace RemoteManager.Exception; 
+namespace RemoteManagerApp.Exception; 
 
 public class ConnectionAlreadyEstablishedException : System.Exception {
     private readonly string _message;

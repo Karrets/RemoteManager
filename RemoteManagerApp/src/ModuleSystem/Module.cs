@@ -1,9 +1,10 @@
+namespace RemoteManagerApp.ModuleSystem; 
+
 using System.IO.Compression;
 using System.Text.Json;
-
-namespace RemoteManager.ModuleSystem; 
-
 using Gtk;
+
+using Exception;
 
 public class Module {
     private readonly Box _internalGUI;

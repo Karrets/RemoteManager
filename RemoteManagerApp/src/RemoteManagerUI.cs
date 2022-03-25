@@ -1,6 +1,7 @@
-namespace RemoteManager;
+namespace RemoteManagerApp;
 
 using ModuleSystem;
+using Exception;
 using Gtk;
 
 public class RemoteManagerUI : Window {
@@ -127,7 +128,7 @@ public class RemoteManagerUI : Window {
     }
 
     public static RemoteManagerUI Create() {
-        var builder = new Builder(null, "RemoteManager.resources.MainWindow.glade", null);
+        var builder = new Builder(null, "RemoteManagerApp.resources.MainWindow.glade", null);
         return new RemoteManagerUI(builder, builder.GetObject("PrimaryWindow").Handle);
     }
 

@@ -1,4 +1,4 @@
-namespace RemoteManager.ModuleSystem; 
+namespace RemoteManagerApp.Exception; 
 
 public class MalformedModuleException : System.Exception {
     private readonly string _message;
