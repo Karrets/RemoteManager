@@ -11,7 +11,7 @@ public class Module {
     private readonly JsonDocument _configFile;
     private readonly string _internalName;
     private ZipArchive _modArchive;
-    private static Dictionary<string, Module> modules = new Dictionary<string, Module>();
+    private static Dictionary<string, Module> _modules = new Dictionary<string, Module>();
 
 
     private Module(Box internalGUI, JsonDocument configFile, string internalName, ZipArchive modArchive) {
@@ -20,7 +20,7 @@ public class Module {
         _internalName = internalName;
         _modArchive = modArchive;
         
-        modules.Add(internalName, this);
+        _modules.Add(internalName, this);
     }
 
     public static Module DefineModuleFromPath(string path) {
