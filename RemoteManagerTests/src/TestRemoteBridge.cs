@@ -1,3 +1,5 @@
+using System;
+
 namespace RemoteManagerTests;
 
 using NUnit.Framework;
@@ -7,20 +9,40 @@ using RemoteManagerApp.Exception;
 public class TestRemoteBridge {
     [Test]
     public void TestConnectionAlreadyRunningThrowsException() {
-        var config = new ConnectionConfiguration("host","username","keyfile",22);
-        RemoteBridge.ConfigureSession(config);
-        RemoteBridge.BeginSession();
-        Assert.Throws<ConnectionAlreadyEstablishedException>(RemoteBridge.BeginSession);
+        var config = new ConnectionConfiguration(
+            "dummyvm.hostname.local",
+            "username",
+            "/home/user/.ssh/id_rsa",
+            22
+        );
+        
+        var bridge = new RemoteBridge();
+        
+        bridge.ConfigureSession(config);
+        bridge.BeginSession();
+        Assert.Throws<ConnectionAlreadyEstablishedException>(bridge.BeginSession);
     }
 
     [Test]
     public void TestNullConfigurationThrowsException() {
-        Assert.Throws<UnconfiguredConnectionException>(RemoteBridge.BeginSession);
+        var bridge = new RemoteBridge();
+        Assert.Throws<UnconfiguredConnectionException>(bridge.BeginSession);
     }
 
     [Test]
     public void TestWorkingConnection() {
-        //Fail until we actually write this test
-        Assert.Equals(2, (2 - 2));
+        var config = new ConnectionConfiguration(
+            "dummyvm.hostname.local",
+            "username",
+            "/home/user/.ssh/id_rsa",
+            22
+        );
+        
+        var bridge = new RemoteBridge();
+        
+        bridge.ConfigureSession(config);
+        bridge.BeginSession();
+        System.Threading.Thread.Sleep(100);
+        bridge.EndSession();
     }
 }
