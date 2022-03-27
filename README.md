@@ -1,4 +1,7 @@
 # RemoteManager
+A utility for remotely managing servers. With as little setup as possible.
+
+## About
 A tool to manage servers with ssh capabilities, easily! Use a completely local GUI in tandem with simple to define modules to control a server. Almost no configuration on the remote required, just an SSH connection, and you're ready to go.
 
 The following libraries are used,
